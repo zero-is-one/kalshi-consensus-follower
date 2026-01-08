@@ -1,0 +1,5 @@
+{
+  "apiKey": "XXXXX-XXXX-XXXX-XXXX-XXXXXX",
+  "privateKeyPem": "-----BEGIN RSA PRIVATE KEY-----\n.........",
+  "basePath": "https://api.elections.kalshi.com/trade-api/v2"
+}

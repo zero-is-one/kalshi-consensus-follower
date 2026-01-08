@@ -1,0 +1,23 @@
+{
+  "name": "kalshi-consensus-follower",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "devDependencies": {
+    "prettier": "^3.7.4"
+  },
+  "engines": {
+    "node": "24.7.0"
+  },
+  "nodeVersion": "24.7.0",
+  "dependencies": {
+    "axios": "^1.13.2"
+  }
+}
