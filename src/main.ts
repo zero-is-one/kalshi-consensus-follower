@@ -8,6 +8,7 @@ import type {
 const kalshiApi = KalshiApi(kalshiConfig);
 
 const pastMarketsThatOrdered: string[] = [];
+let ordersMadeDuringSession = 0;
 
 async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   const timePeriods = [
@@ -124,12 +125,16 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
       [`${side}_price`]: 95,
     });
 
+    ordersMadeDuringSession += newOrdersToPlaceCount;
+
     console.log(
       `Placed ${newOrdersToPlaceCount} orders for market ${marketTicker} for users:`
     );
   }
 
-  console.log(`Finished processing all markets.`);
+  console.log(
+    `Finished processing all markets. Total orders placed during this session: ${ordersMadeDuringSession}.`
+  );
 }
 
 await main({ isInitialRun: true });
