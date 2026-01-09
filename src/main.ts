@@ -132,8 +132,12 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
     );
   }
 
+  const nycTime = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+  });
+
   console.log(
-    `Finished processing all markets. Total orders placed during this session: ${ordersMadeDuringSession}.`
+    `Finished processing all markets. Total orders placed during this session: ${ordersMadeDuringSession}. (${nycTime})`
   );
 }
 
