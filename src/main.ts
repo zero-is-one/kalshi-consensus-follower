@@ -9,6 +9,7 @@ const kalshiApi = KalshiApi(kalshiConfig);
 
 const pastMarketsThatOrdered: string[] = [];
 let ordersMadeDuringSession = 0;
+let sessionRunCount = 0;
 
 async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   const timePeriods = [
@@ -132,13 +133,19 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
     );
   }
 
+  sessionRunCount++;
+
   const nycTime = new Date().toLocaleString("en-US", {
     timeZone: "America/New_York",
   });
 
   console.log(
-    `Finished processing all markets. Total orders placed during this session: ${ordersMadeDuringSession}. (${nycTime})`
+    `Total orders placed during this session: ${ordersMadeDuringSession}.`
   );
+  console.log(
+    `Total Runs: ${sessionRunCount}. Total markets ordered: ${pastMarketsThatOrdered.length}.`
+  );
+  console.log(`--- Run Complete (${nycTime}) ---`);
 }
 
 await main({ isInitialRun: true });
