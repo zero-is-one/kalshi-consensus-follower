@@ -143,7 +143,7 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
 
 await main({ isInitialRun: true });
 
-setTimeout(
+setInterval(
   () => {
     console.log("Starting the next run...");
     try {
