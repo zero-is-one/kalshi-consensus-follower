@@ -8,8 +8,10 @@ import type {
 const kalshiApi = KalshiApi(kalshiConfig);
 
 const pastMarketsThatOrdered: string[] = [];
-let ordersMadeDuringSession = 0;
-let sessionRunCount = 0;
+const stats = {
+  totalOrdersPlaced: 0,
+  totalRuns: 0,
+};
 
 async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   const timePeriods = [
@@ -84,7 +86,7 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   console.log("Users grouped by market holdings:");
   const userHoldingsByMarketTickerArr = [
     ...userHoldingsByMarketTicker.entries(),
-  ].filter(([_, userHoldings]) => userHoldings.length >= 2);
+  ].filter(([_, userHoldings]) => userHoldings.length >= 3);
 
   for (const [marketTicker, userHoldings] of userHoldingsByMarketTickerArr) {
     console.log(
@@ -92,20 +94,14 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
       userHoldings.map((uh) => uh.nickname)
     );
 
-    const pastMarketOrderCount = pastMarketsThatOrdered.filter(
-      (id) => id === marketTicker
-    ).length;
-
-    pastMarketsThatOrdered.push(...userHoldings.map(() => marketTicker));
-
-    const newOrdersToPlaceCount = userHoldings.length - pastMarketOrderCount;
-
-    if (newOrdersToPlaceCount === 0) {
+    if (pastMarketsThatOrdered.includes(marketTicker)) {
       console.log(
-        `-> Skipping market ${marketTicker}. It has already been ordered for all users in the past.`
+        `-> Skipping market ${marketTicker}. It has already been ordered.`
       );
       continue;
     }
+
+    pastMarketsThatOrdered.push(marketTicker);
 
     if (isInitialRun) {
       console.log(
@@ -117,35 +113,33 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
     const marketHolding = userHoldings[0].holding.market_holdings[0];
     const side = marketHolding.signed_open_position > 0 ? "yes" : "no";
 
-    await kalshiApi.order({
+    const order = await kalshiApi.order({
       ticker: marketTicker,
       side,
       action: "buy",
-      count: newOrdersToPlaceCount,
+      count: 3,
       type: "market",
       [`${side}_price`]: 95,
     });
 
-    ordersMadeDuringSession += newOrdersToPlaceCount;
+    stats.totalOrdersPlaced += 1;
 
-    console.log(
-      `Placed ${newOrdersToPlaceCount} orders for market ${marketTicker} for users:`
-    );
+    console.log(`Placed order for market ${marketTicker}`, order);
   }
 
-  sessionRunCount++;
-
-  const nycTime = new Date().toLocaleString("en-US", {
-    timeZone: "America/New_York",
-  });
+  stats.totalRuns += 1;
 
   console.log(
-    `Total orders placed during this session: ${ordersMadeDuringSession}.`
+    `Total orders placed during this session: ${stats.totalOrdersPlaced}.`
   );
   console.log(
-    `Total Runs: ${sessionRunCount}. Total markets ordered: ${pastMarketsThatOrdered.length}.`
+    `Total Runs: ${stats.totalRuns}. Total markets ordered: ${pastMarketsThatOrdered.length}.`
   );
-  console.log(`--- Run Complete (${nycTime}) ---`);
+  console.log(
+    `--- Run Complete (${new Date().toLocaleString("en-US", {
+      timeZone: "America/New_York",
+    })}) ---`
+  );
 }
 
 await main({ isInitialRun: true });
