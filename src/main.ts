@@ -4,6 +4,7 @@ import type {
   KalshiOrderResponse,
   KalshiProfileHolding,
 } from "../kalshi-api/types.ts";
+import { getPrettyTimestamp } from "./utils.ts";
 
 const kalshiApi = KalshiApi(kalshiConfig);
 
@@ -14,7 +15,7 @@ const stats = {
 };
 
 async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
-  console.log(`--- V2 Starting Run (${getTimestamp()}) ---`);
+  console.log(`--- V2 Starting Run (${getPrettyTimestamp()}) ---`);
   const timePeriods = [
     "all_time",
     "yearly",
@@ -136,7 +137,7 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   console.log(
     `Total Runs: ${stats.totalRuns}. Total markets ordered: ${pastMarketsThatOrdered.length}.`
   );
-  console.log(`--- Run Complete (${getTimestamp()}) ---`);
+  console.log(`--- Run Complete (${getPrettyTimestamp()}) ---`);
 }
 
 await main({ isInitialRun: true });
@@ -152,10 +153,3 @@ setInterval(
   },
   1000 * 60 * 60 * 2 // Run every 2 hours
 );
-
-const getTimestamp = () => {
-  const now = new Date();
-  return now.toLocaleString("en-US", {
-    timeZone: "America/New_York",
-  });
-};
