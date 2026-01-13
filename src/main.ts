@@ -14,6 +14,7 @@ const stats = {
 };
 
 async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
+  console.log(`--- V2 Starting Run (${getTimestamp()}) ---`);
   const timePeriods = [
     "all_time",
     "yearly",
@@ -135,11 +136,7 @@ async function main({ isInitialRun = true }: { isInitialRun?: boolean }) {
   console.log(
     `Total Runs: ${stats.totalRuns}. Total markets ordered: ${pastMarketsThatOrdered.length}.`
   );
-  console.log(
-    `--- Run Complete (${new Date().toLocaleString("en-US", {
-      timeZone: "America/New_York",
-    })}) ---`
-  );
+  console.log(`--- Run Complete (${getTimestamp()}) ---`);
 }
 
 await main({ isInitialRun: true });
@@ -155,3 +152,10 @@ setInterval(
   },
   1000 * 60 * 60 * 2 // Run every 2 hours
 );
+
+const getTimestamp = () => {
+  const now = new Date();
+  return now.toLocaleString("en-US", {
+    timeZone: "America/New_York",
+  });
+};
